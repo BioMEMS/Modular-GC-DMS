@@ -24,43 +24,43 @@
 #include <Math.h>
 #include <String.h>
 //#define ARDUINO_DUE
-#include<runEvent.h>      //Structs for how events are stored and processed
+#include<runEvent.h>          //Structs for how events are stored and processed
 #include<mySerialProtocol.h>  //How serial messages are recieved and handled from PC
-#include<stdint.h>        //Standard library
-#include<tempProfile.h>     //Structs for GC Profile. Maybe should be merged with runEvent?
-#include<TrapLib_Rev2.h>        //PID Library for the trap.
-#include<CPID.h>        //Generic PID library used in other libraries
+#include<stdint.h>            //Standard library
+#include<tempProfile.h>       //Structs for GC Profile. Maybe should be merged with runEvent?
+#include<TrapLib_Rev2.h>      //PID Library for the trap.
+#include<CPID.h>              //Generic PID library used in other libraries
 #include<Serial_SPI_Sensors.h>  //For managed SPI Sensor Board
-#include<Column_Lib.h>      //Equivalent of TrapLib 2 for RTD
-#include<DuePWM.h>        //DuePWM library to reduce noise on the RTD line
-#include<RTD.h>         //Library to encapsulate some of the RTD utilities/calculations
-#include<SerialUtils.h>     //Useful serial commands, including clearing the terminal
+#include<Column_Lib.h>        //Equivalent of TrapLib 2 for RTD
+#include<DuePWM.h>            //DuePWM library to reduce noise on the RTD line
+#include<RTD.h>               //Library to encapsulate some of the RTD utilities/calculations
+#include<SerialUtils.h>       //Useful serial commands, including clearing the terminal
 
 //PID Defines, should move into header-file...
 #define SETPOINT 35
 //Transfer Line PID Constants
-#define KP 3  //Proportional
-#define KI 0.1  //Integral
-#define KD 0.1  //Derivative
+#define KP 3                  //Proportional
+#define KI 0.1                //Integral
+#define KD 0.1                //Derivative
 //Column Module PID Constants
-#define CKP 25  //Proportional
-#define CKI 0.5 //Integral
-#define CKD 1 //Derivative
+#define CKP 25                //Proportional
+#define CKI 0.5               //Integral
+#define CKD 1                 //Derivative
 //Trap PID Constants
-#define TKP 11  //Proportional 3
-#define TKI .07 //Integral   0.1
-#define TKD 0 //Derivative   1
+#define TKP 11                //Proportional 3
+#define TKI .07               //Integral   0.1
+#define TKD 0                 //Derivative   1
 //Guard Column PID Constants (Still needs to be tuned)
-#define GKP 25  //Proportional
-#define GKI .1  //Integral
-#define GKD 0 //Derivative
-#define DT 100        //DT for PID run time
-#define CURRENT 0.00075   //Current used on RTD excitation (Calculation only)
-#define RREF 1976     //Reference Resistor Values used in RTD calc
-#define GCFREQ 15     //Column PWM Frequency, this seems high.....
-#define T_SETPOINT 150    //Trap Setpoint
-#define GCE_SETPOINT 100  //Guard Column Enclosure setpoint
-#define ADS_BITS 15     //Bits resolution for the RTD ADC
+#define GKP 25                //Proportional
+#define GKI .1                //Integral
+#define GKD 0                 //Derivative
+#define DT 100                //DT for PID run time
+#define CURRENT 0.00075       //Current used on RTD excitation (Calculation only)
+#define RREF 1976             //Reference Resistor Values used in RTD calc
+#define GCFREQ 15             //Column PWM Frequency, this seems high.....
+#define T_SETPOINT 150        //Trap Setpoint
+#define GCE_SETPOINT 100      //Guard Column Enclosure setpoint
+#define ADS_BITS 15           //Bits resolution for the RTD ADC
 
 //Pin name definitions
 const uint8_t aOutTransfer1 = 2;  //Transfer line 1 of Column Module
@@ -69,7 +69,7 @@ const uint8_t aOutModule = 6;     //Column heater
 const uint8_t aOutTrap = 4;       //Trap Heater
 const uint8_t aOutGCE = 7;        //Guard Column Enclosure heater
 const uint8_t LED = 13;           //Unnecessary, LED pin
-const uint8_t dOutFan = 5;       //Column Fan
+const uint8_t dOutFan = 5;        //Column Fan
 const uint8_t dInSwitch = 23;     //Override switch, becoming unnecessary
 const uint8_t dOutPump1 = 25;     //Circulation Pump
 const uint8_t dOutPump2 = 24;     //Sample Pump
@@ -93,8 +93,8 @@ uint8_t messageLength = sProtocol.getPayloadSizeMax();
 //Trap lib is encapsulating the generic PID library, interfacing with the thermocouple, and PWM out
 TrapLib Transfer1(Serial1, 1);  //Thermocouple 1
 TrapLib Transfer2(Serial1, 2);  //Thermocouple 2
-TrapLib Trap(Serial1, 3);   //Thermocouple 3
-TrapLib guardCE(Serial1, 4);  //Thermocouple 4
+TrapLib Trap(Serial1, 3);       //Thermocouple 3
+TrapLib guardCE(Serial1, 4);    //Thermocouple 4
 
 //I never encapsulated the ADS header, maybe still should
 Column_Lib Column(Serial1);
@@ -117,10 +117,10 @@ char lastmode = '3';
 int cycle_repeat = 0;
 int cycle_current = 1;
 
-uint32_t eventsTime[20] = {0};   int i1 = 0; //should always have an event at 0sec time!!!
+uint32_t eventsTime[20] = {0};   int i1 = 0;  //should always have an event at 0sec time!!!
 uint32_t eventsType[20] = {5};
 
-uint32_t gcTime[20] = {0};   int i2 = 0;  //should always have time start at 0 and temp at 20.0!!!
+uint32_t gcTime[20] = {0};   int i2 = 0;      //should always have time start at 0 and temp at 20.0!!!
 float gcTemp[20] = {20.0};
 
 uint32_t trapTime[20] = {0};   int i3 = 0;
@@ -164,8 +164,8 @@ void setup()
   trapTime[17] = 172800000;
   trapTemp[17] = 20.0;
   // put your setup code here, to run once:
-  Serial.begin(115200);        //Probably can be faster
-  Serial1.begin(250000);        //Do not change without also changing baud on the ATMega328
+  Serial.begin(115200);
+  Serial1.begin(250000);      //Do not change without also changing baud on the ATMega328
 
   pinMode(LED, OUTPUT);       //Debug only
   pinMode(dOutFan, OUTPUT);
@@ -176,17 +176,14 @@ void setup()
   pinMode(dOut3Valve, OUTPUT);
   //Might be able to get some of these config calls into constructors for the classes
   configColumnClasses();    //Set up Column Control parameters
-  configTrapClass();      //Set up trap control parameters
-  configGCEClass();     //Set up guard column control parameters
+  configTrapClass();        //Set up trap control parameters
+  configGCEClass();         //Set up guard column control parameters
 
   delay(50);
   systemIdle();
   global_time = millis();
   //Serial.println("exited setup");
   
-
-  //upload default_temp to peripherals
-
 }
 
 void loop()
@@ -669,46 +666,46 @@ float getGCTemp()
 //This function should probably be renamed
 void configColumnClasses() {
   //Transfer line 1
-  Transfer1.setPIDValues(KP, KI, KD);    //Set PID Constants
-  Transfer1.connectTime(&global_time);   //Give class global time
-  Transfer1.setPWM_Out(aOutTransfer1);  //Set PID Output Pin
-  digitalWrite(aOutTransfer1, LOW);   //Check this line...
-  Transfer1.setDTime(DT);         //Set DT for PID Loop, Constant should be changed if this is edited
-  Transfer1.setSetpoint(SETPOINT);    //Set Setpoint
+  Transfer1.setPIDValues(KP, KI, KD);     //Set PID Constants
+  Transfer1.connectTime(&global_time);    //Give class global time
+  Transfer1.setPWM_Out(aOutTransfer1);    //Set PID Output Pin
+  digitalWrite(aOutTransfer1, LOW);       //Check this line...
+  Transfer1.setDTime(DT);                 //Set DT for PID Loop, Constant should be changed if this is edited
+  Transfer1.setSetpoint(SETPOINT);        //Set Setpoint
 
   //transfer line 2
-  Transfer2.setPIDValues(KP, KI, KD);   //Set PID Constant
-  Transfer2.connectTime(&global_time);   //Give class global time
-  Transfer2.setPWM_Out(aOutTransfer2);  //Set PID Output Pin
-  digitalWrite(aOutTransfer2, LOW);   //Check this line...
-  Transfer2.setDTime(DT);         //Set DT for PID Loop, edit constants if changed
-  Transfer2.setSetpoint(SETPOINT);    //Set Setpoint
+  Transfer2.setPIDValues(KP, KI, KD);     //Set PID Constant
+  Transfer2.connectTime(&global_time);    //Give class global time
+  Transfer2.setPWM_Out(aOutTransfer2);    //Set PID Output Pin
+  digitalWrite(aOutTransfer2, LOW);       //Check this line...
+  Transfer2.setDTime(DT);                 //Set DT for PID Loop, edit constants if changed
+  Transfer2.setSetpoint(SETPOINT);        //Set Setpoint
 
   //Column module
-  Column.setPIDValues(CKP, CKI, CKD);   //Set PID Constants
-  Column.connectTime(&global_time);    //Give class global time
-  Column.setDTime(DT);          //Set DT for PID loop
-  Column.setSetpoint(SETPOINT);     //Set Setpoint
-  Column.setFreq1(GCFREQ);        //Set Output pin frequency
-  Column.setPWM_Out(aOutModule);      //Set PWM output pin
+  Column.setPIDValues(CKP, CKI, CKD);     //Set PID Constants
+  Column.connectTime(&global_time);       //Give class global time
+  Column.setDTime(DT);                    //Set DT for PID loop
+  Column.setSetpoint(SETPOINT);           //Set Setpoint
+  Column.setFreq1(GCFREQ);                //Set Output pin frequency
+  Column.setPWM_Out(aOutModule);          //Set PWM output pin
 }
 
 void configTrapClass() {
-  Trap.setPIDValues(TKP, TKI, TKD);   //Load PID constants into class
-  Trap.connectTime(&global_time);    //connect global time variable to class
-  Trap.setPWM_Out(aOutTrap);      //Give class pwm pin identifier
-  Trap.setDTime(DT);          //dT for trap control system
-  Trap.setSetpoint(T_SETPOINT);   //Give set point to trap  class
-  analogWrite(aOutTrap, 0);     //Default the output to zero
+  Trap.setPIDValues(TKP, TKI, TKD);     //Load PID constants into class
+  Trap.connectTime(&global_time);       //connect global time variable to class
+  Trap.setPWM_Out(aOutTrap);            //Give class pwm pin identifier
+  Trap.setDTime(DT);                    //dT for trap control system
+  Trap.setSetpoint(T_SETPOINT);         //Give set point to trap  class
+  analogWrite(aOutTrap, 0);             //Default the output to zero
 }
 
 void configGCEClass() {
-  guardCE.setPIDValues(GKP, GKI, GKD);    //Load PID constants into class [Need to determine these]
-  guardCE.connectTime(&global_time);   //connect global time variable to class
-  guardCE.setPWM_Out(aOutGCE);      //Give class pwm pin identifier
-  guardCE.setDTime(DT);         //dT for trap control system
+  guardCE.setPIDValues(GKP, GKI, GKD);  //Load PID constants into class
+  guardCE.connectTime(&global_time);    //connect global time variable to class
+  guardCE.setPWM_Out(aOutGCE);          //Give class pwm pin identifier
+  guardCE.setDTime(DT);                 //dT for trap control system
   guardCE.setSetpoint(GCE_SETPOINT);    //Give set point to trap  class
-  analogWrite(aOutGCE, 0);        //Default the output to zero
+  analogWrite(aOutGCE, 0);              //Default the output to zero
 }
 
 

@@ -47,7 +47,7 @@ class MainPage(tk.Tk):
         self.comb.grid(row=0, column=0, padx=15, pady=15, sticky='N')
 
         self.eventb = EventsBox()
-        self.eventb.grid(row=0, column=1, rowspan=5, padx=15, pady=23, sticky='n') #pady = 27 is old value
+        self.eventb.grid(row=0, column=1, rowspan=5, padx=15, pady=23, sticky='n')
         
         self.statb = StatusBox()
         self.statb.grid(row=1, column=0, padx=5, pady=0, sticky='N')
@@ -83,11 +83,11 @@ class MainPage(tk.Tk):
         self.cpr.grid(row=6, column=1, columnspan=6, padx=60, sticky='w')
 
         self.conb = tk.LabelFrame(self, text='Control', relief=tk.GROOVE, padx=5, pady=10)
-        self.b1 = tk.Button(self.conb, text='RUN', width=15, height=1, bg="#c2ff64", command=self.strun, font="Times 12 bold") #6af94a" #e6e751
+        self.b1 = tk.Button(self.conb, text='RUN', width=15, height=1, bg="#c2ff64", command=self.strun, font="Times 12 bold")
         self.b1.grid(row=2, column=0, sticky='n',pady=3, padx=3, columnspan=2)
-        self.b2 = tk.Button(self.conb, text='ACTIVE', width=15, height=1, bg='#2998e4', command=self.active, font="Times 12 bold") ##effb2d
+        self.b2 = tk.Button(self.conb, text='ACTIVE', width=15, height=1, bg='#2998e4', command=self.active, font="Times 12 bold")
         self.b2.grid(row=1, column=0, sticky='s', pady=3, columnspan=2)
-        self.b3 = tk.Button(self.conb, text='IDLE', width=15, height=1, bg='#625b91', command=self.idle, font="Times 12 bold") #D780C7 #35759c
+        self.b3 = tk.Button(self.conb, text='IDLE', width=15, height=1, bg='#625b91', command=self.idle, font="Times 12 bold")
         self.b3.grid(row=0, column=0, sticky='s', pady=3, columnspan=2)
         self.b4 = tk.Button(self.conb, text='Repeat', width=5, command=self.cycle_press) #
         self.b4.grid(row=4, column=0, sticky='s', pady=0)
@@ -285,7 +285,7 @@ class MainPage(tk.Tk):
                 cycle_str = "0"
 
             
-            if str(self.actb.e1.cget('state')) == 'normal':    #check to make sure this guy is active
+            if str(self.actb.e1.cget('state')) == 'normal':
                 act_str = ""
                 for self.e_child in self.actb.e_child_list:
                     evt = self.e_child.get()            
@@ -446,15 +446,15 @@ class PlotSupport(tk.LabelFrame):
         tk.LabelFrame.__init__(self)
         self.config(relief=tk.GROOVE, text='Plot Control', padx=5, pady=7)
 
-        self.b1 = tk.Button(self, text="Trap:", width=17, command=self.trapon, bg='#625b91')    #089cd4     #1f1663
+        self.b1 = tk.Button(self, text="Trap:", width=17, command=self.trapon, bg='#625b91')
         self.b1.grid(row=0, column=0, pady=1)
-        self.b2 = tk.Button(self, text="GC:", width=17, command=self.gcon, bg='#2998e4')    #94bf7e
+        self.b2 = tk.Button(self, text="GC:", width=17, command=self.gcon, bg='#2998e4')
         self.b2.grid(row=1, column=0, pady=1)
-        self.b3 = tk.Button(self, text="TF1:", width=17, command=self.tf1on, bg='#c2ff64')  #e6e751
+        self.b3 = tk.Button(self, text="TF1:", width=17, command=self.tf1on, bg='#c2ff64')
         self.b3.grid(row=2, column=0, pady=1)
-        self.b4 = tk.Button(self, text="TF2:", width=17, command=self.tf2on, bg='#ffa200')  #ff8551
+        self.b4 = tk.Button(self, text="TF2:", width=17, command=self.tf2on, bg='#ffa200')
         self.b4.grid(row=3, column=0, pady=1)
-        self.b5 = tk.Button(self, text="Guard:", width=17, command=self.guardon, bg='#af4e4e')  #ee5b42     #8e0303
+        self.b5 = tk.Button(self, text="Guard:", width=17, command=self.guardon, bg='#af4e4e')
         self.b5.grid(row=4, column=0, pady=1)
 
         lin = ttk.Separator(self, orient=tk.VERTICAL)
@@ -924,7 +924,6 @@ class DataManager():
         self.mydlist = self.mystr.split(',')
         if (len(self.mydlist) == 13) and self.goodtogo:
             try:
-                #print(str(self.mydlist))
                 self.listnum = [int(i) for i in self.mydlist]
                 mymain.supb.b1.config(text="Trap: "+str(self.listnum[0])+" (C)")
                 mymain.supb.b2.config(text="GC: "+str(self.listnum[1])+" (C)")
@@ -941,7 +940,7 @@ class DataManager():
                 mymain.pb_val.set(mymain.pb_val.get() + self.listnum[10] - self.pbo)
                 self.pbo = self.listnum[10]
                 
-                if ((mode == 'run') and (self.cycle_num_loc == self.cycle_num)) and (self.ard_mode != 6):  #potential bug be careful (might reset graphic if cycle number doesnt match all of a sudden)
+                if ((mode == 'run') and (self.cycle_num_loc == self.cycle_num)) and (self.ard_mode != 6):
                     for self.s1 in self.run_temp_list:
                         self.s1.append(self.listnum[self.i])
                         self.i += 1
@@ -1000,7 +999,6 @@ class DataManager():
                     mymain.pb_val.set(0)
                 
                 self.ard_mode = self.listnum[self.i]
-                #if ((self.ard_mode == 7) or (self.ard_mode == 2)) and (mode != 'active'):
                 if ((self.ard_mode == 2) and (mode != 'active')):
                     self.missed_7 += 1
                     if self.missed_7 > 4:
@@ -1229,7 +1227,6 @@ c_green = "g".encode()
 
 #Run all the setup commands here (they (should) run once
 mymain = MainPage()
-#mymain.resizable(width=tk.FALSE, height=tk.FALSE)
 def removemain():
     global mymain
     mymain.t1.insert(tk.END, "Press 'Quit' to exit (Must be in 'Idle' mode)\n")
@@ -1300,7 +1297,7 @@ while loop:
                         mymain.t1.insert(tk.END, "Uploading run parameters...\n")
                         mymain.t1.see(tk.END)
                         mymain.update()
-                        if write_to_suitcase(event_str2) != True: #indata != str(temp2).encode():
+                        if write_to_suitcase(event_str2) != True:
                             mymain.t1.insert(tk.END, "Communications error 2... Returning to active...\n")
                             mymain.t1.see(tk.END)
                             mymain.update()
@@ -1344,7 +1341,7 @@ while loop:
                                             else:
                                                 time.sleep(0.05)
                                                 temp2 = int(cycle_str)                                             
-                                                Serial1.write(str(temp2).encode()) #write cycle time
+                                                Serial1.write(str(temp2).encode())
                                                 time.sleep(0.4)
                                                 indata = Serial1.readline()
                                                 if indata != str(temp2).encode():
@@ -1444,12 +1441,9 @@ while loop:
                             time.sleep(0.05)
                             indata = Serial1.readline() #dummy read in order to clear serial buffer
                             time.sleep(0.05)
-                            #print(c_act_init)
-                            #print('5')
                             Serial1.write(c_act_init)    #send command to suitcase
                             time.sleep(0.2)
                             indata = Serial1.readline()
-                            #print(indata)
                             if indata != c_act_init:
                                 mymain.t1.insert(tk.END, "Communications error 1... Returning to Idle...\n")
                                 mymain.t1.see(tk.END)
