@@ -1439,7 +1439,7 @@ while loop:
                             garbage2 = garbage1.split(',')
                         try:
                             time.sleep(0.05)
-                            indata = Serial1.readline() #dummy read in order to clear serial buffer
+                            indata = Serial1.readline()
                             time.sleep(0.05)
                             Serial1.write(c_act_init)    #send command to suitcase
                             time.sleep(0.2)

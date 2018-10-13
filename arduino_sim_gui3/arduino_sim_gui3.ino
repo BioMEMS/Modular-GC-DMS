@@ -117,10 +117,10 @@ char lastmode = '3';
 int cycle_repeat = 0;
 int cycle_current = 1;
 
-uint32_t eventsTime[20] = {0};   int i1 = 0;  //should always have an event at 0sec time!!!
+uint32_t eventsTime[20] = {0};   int i1 = 0;  //should always have an event at 0sec time
 uint32_t eventsType[20] = {5};
 
-uint32_t gcTime[20] = {0};   int i2 = 0;      //should always have time start at 0 and temp at 20.0!!!
+uint32_t gcTime[20] = {0};   int i2 = 0;      //should always have time start at 0 and temp at 20.0
 float gcTemp[20] = {20.0};
 
 uint32_t trapTime[20] = {0};   int i3 = 0;
